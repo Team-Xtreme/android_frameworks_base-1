@@ -73,6 +73,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private StatusBar mStatusBarComponent;
     private DarkIconManager mDarkIconManager;
     private SignalClusterView mSignalClusterView;
+    private LinearLayout mCenterClockLayout;
 
     // AIMROM additions start
     private ImageView mAimLogo;
@@ -154,6 +155,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         Dependency.get(StatusBarIconController.class).addIconGroup(mDarkIconManager);
         mSystemIconArea = mStatusBar.findViewById(R.id.system_icon_area);
         mSignalClusterView = mStatusBar.findViewById(R.id.signal_cluster);
+        mCenterClockLayout = (LinearLayout) mStatusBar.findViewById(R.id.center_clock_layout);
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(mSignalClusterView);
         mAimLogo = mStatusBar.findViewById(R.id.status_bar_logo);
         mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
@@ -257,12 +259,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         return false;
     }
 
+
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate, true);
+        animateHide(mCenterClockLayout, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
         animateShow(mSystemIconArea, animate);
+        animateShow(mCenterClockLayout, animate);
     }
 
     public void hideNotificationIconArea(boolean animate) {
@@ -270,6 +275,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         if (mShowLogo) {
             animateHide(mAimLogo, animate, true);
         }
+        animateHide(mCenterClockLayout, animate);
     }
 
     public void showNotificationIconArea(boolean animate) {
@@ -289,6 +295,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         if (mCustomCarrierLabel != null) {
             setCarrierLabel(animate);
         }
+        animateShow(mCenterClockLayout, animate);
     }
 
     /**
