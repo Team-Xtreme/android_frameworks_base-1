@@ -4479,12 +4479,23 @@ public final class Settings {
          * If all file types can be accepted over Bluetooth OBEX.
          * @hide
          */
-           public static final String BLUETOOTH_ACCEPT_ALL_FILES = "bluetooth_accept_all_files";
- 
-        /**
-          * Settings to backup. This is here so that it's in the same place as the settings
+        public static final String BLUETOOTH_ACCEPT_ALL_FILES = "bluetooth_accept_all_files";
 
-	 * keys and easy to update.
+        /**
+         * show carrier in statusbar. The value is
+         * int (1: Show or 0: Hide).
+         */
+        public static final String STATUS_BAR_CARRIER = "status_bar_carrier";
+
+        /**
+         * custom carrier label. The value is
+         * String.
+         */
+        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
+
+        /**
+         * Settings to backup. This is here so that it's in the same place as the settings
+         * keys and easy to update.
          *
          * NOTE: Settings are backed up and restored in the order they appear
          *       in this array. If you have one setting depending on another,

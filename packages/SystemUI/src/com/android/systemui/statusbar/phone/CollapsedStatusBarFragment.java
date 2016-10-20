@@ -22,6 +22,8 @@ import static com.android.systemui.statusbar.phone.StatusBar.reinflateSignalClus
 import android.annotation.Nullable;
 import android.app.Fragment;
 import android.app.StatusBarManager;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,6 +79,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 	private int mCustomLogos;
     private boolean mShowLogo;
 	private int mLogoColor;
+    private View mCustomCarrierLabel;
+    private int mShowCarrierLabel;
     private final Handler mHandler = new Handler();
 
     private class AimSettingsObserver extends ContentObserver {
@@ -88,12 +92,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_LOGO),
                     false, this, UserHandle.USER_ALL);
-		 getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                     Settings.System.STATUS_BAR_CUSTOM_LOGOS),
-                     false, this, UserHandle.USER_ALL);
-		getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                     Settings.System.STATUS_BAR_LOGO_COLOR),
-                     false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LOGOS),
+                    false, this, UserHandle.USER_ALL);
+	    getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_LOGO_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -123,6 +130,13 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mAimSettingsObserver.observe();
     }
 
+    public void updateSettings(boolean animate) {
+        mShowCarrierLabel = Settings.System.getIntForUser(
+                getContext().getContentResolver(), Settings.System.STATUS_BAR_CARRIER, 1,
+                UserHandle.USER_CURRENT);
+        setCarrierLabel(animate);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             Bundle savedInstanceState) {
@@ -142,6 +156,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mSignalClusterView = mStatusBar.findViewById(R.id.signal_cluster);
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(mSignalClusterView);
         mAimLogo = mStatusBar.findViewById(R.id.status_bar_logo);
+        mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
         updateSettings(false);
         // Default to showing until we know otherwise.
         showSystemIconArea(false);
@@ -399,5 +414,11 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                 animateHide(mAimLogo, animate, false);
             }
         }
+    }
+
+    public void updateSettings(boolean animate) {
+        mShowCarrierLabel = Settings.System.getIntForUser(
+                getContext().getContentResolver(), Settings.System.STATUS_BAR_CARRIER, 1,
+                UserHandle.USER_CURRENT);
     }
 }

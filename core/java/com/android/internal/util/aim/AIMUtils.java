@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.input.InputManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -46,6 +47,7 @@ import android.view.WindowManager;
 import com.android.internal.R;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.android.internal.statusbar.IStatusBarService;
 
@@ -86,6 +88,13 @@ public class AIMUtils {
 
     public static boolean isPackageInstalled(Context context, String pkg) {
         return isPackageInstalled(context, pkg, true);
+    }
+
+    // Check for Chinese language
+    public static boolean isChineseLanguage() {
+       return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
+               Locale.CHINESE.getLanguage());
+
     }
 
     private static int getScreenType(Context context) {
