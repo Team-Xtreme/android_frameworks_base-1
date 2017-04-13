@@ -4570,6 +4570,12 @@ public final class Settings {
         public static final String FORCE_AMBIENT_FOR_MEDIA = "force_ambient_for_media";
 
         /**
+         * Whether to display cross sign for a data disabled connection
+         * @hide
+         */
+        public static final String DATA_DISABLED_ICON = "data_disabled_icon";
+
+        /**
          * Whether to display roaming indicator for roaming signal connection
          * @hide
          */
