@@ -178,4 +178,6 @@
 
   <!-- Whether device supports internal audio recording -->
   <java-symbol type="bool" name="config_hasInternalAudioRecordingSupport" />
+
+  <java-symbol type="array" name="config_blockPackagesSensorDrain" />
 </resources>
