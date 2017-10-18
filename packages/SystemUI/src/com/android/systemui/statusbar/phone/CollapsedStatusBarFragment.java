@@ -424,6 +424,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 		return;
 	}
 
+        if (getContext() == null) {
+            return;
+        }
+
         mShowLogo = Settings.System.getIntForUser(
                 getContext().getContentResolver(), Settings.System.STATUS_BAR_LOGO, 0,
                 UserHandle.USER_CURRENT) == 1;
