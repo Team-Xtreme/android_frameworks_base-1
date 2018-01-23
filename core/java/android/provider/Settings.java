@@ -4522,6 +4522,13 @@ public final class Settings {
         public static final String SHOW_FOURG_ICON = "show_fourg_icon";
 
         /**
+         * Lockscreen Visualizer
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4577,7 +4584,8 @@ public final class Settings {
             LOCK_TO_APP_ENABLED,
             NOTIFICATION_SOUND,
             ACCELEROMETER_ROTATION,
-            SHOW_BATTERY_PERCENT
+            SHOW_BATTERY_PERCENT,
+            LOCKSCREEN_VISUALIZER_ENABLED
         };
 
         /**
@@ -4711,9 +4719,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_COLUMNS_PORTRAIT);
             PRIVATE_SETTINGS.add(QS_COLUMNS_LANDSCAPE);
             PRIVATE_SETTINGS.add(LESS_BORING_HEADS_UP);
-	    PRIVATE_SETTINGS.add(SYSTEM_THEME_STYLE);
-
-	}
+            PRIVATE_SETTINGS.add(LOCKSCREEN_VISUALIZER_ENABLED);
+        }
 
         /**
          * These are all public system settings
