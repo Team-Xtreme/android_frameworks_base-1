@@ -4213,6 +4213,55 @@ public final class Settings {
        public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
         /**
+         * Whether to display the power menu advanced reboot option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_ADVANCED_REBOOT = "powermenu_ls_advanced_reboot";
+
+        /**
+         * Whether to display the power menu screenshot option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_SCREENSHOT = "powermenu_ls_screenshot";
+
+        /**
+         * Whether to display the power menu screenrecord option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_SCREENRECORD ="powermenu_ls_screenrecord";
+
+        /**
+         * Whether to display the power menu torch option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_TORCH ="powermenu_ls_torch";
+
+        /**
+         * Whether to display the power menu users option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_USERS ="powermenu_ls_users";
+
+        /**
+         * Whether to display the power menu airplane mode option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_AIRPLANE = "powermenu_ls_airplane";
+
+        /**
+         * Whether to display the power menu reboot option on a secured lockscreen
+         *
+         * @hide
+         */
+        public static final String POWERMENU_LS_REBOOT = "powermenu_ls_reboot";
+
+        /**
         * Really full 100 battery charging color
         * @hide
         */
