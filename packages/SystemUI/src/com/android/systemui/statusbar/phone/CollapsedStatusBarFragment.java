@@ -82,6 +82,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 	private int mLogoColor;
     private View mCustomCarrierLabel;
     private int mShowCarrierLabel;
+
+    // Clock position and tweaks
+    private View mLeftClock;
+    private int mClockStyle;
     private final Handler mHandler = new Handler();
 
     private class AimSettingsObserver extends ContentObserver {
@@ -102,14 +106,19 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER),
                     false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_CLOCK_STYLE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if ((uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_LOGO))) ||
                 (uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_CUSTOM_LOGOS))) ||
-                (uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_LOGO_COLOR)))){
-                updateSettings(true);
+                (uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_LOGO_COLOR))) ||
+                (uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_CARRIER))) ||
+                (uri.equals(Settings.System.getUriFor(Settings.System.STATUSBAR_CLOCK_STYLE))))  {
+            updateSettings(true);
             }
         }
     }
@@ -156,6 +165,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mSystemIconArea = mStatusBar.findViewById(R.id.system_icon_area);
         mSignalClusterView = mStatusBar.findViewById(R.id.signal_cluster);
         mCenterClockLayout = (LinearLayout) mStatusBar.findViewById(R.id.center_clock_layout);
+        mLeftClock = mStatusBar.findViewById(R.id.left_clock);
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(mSignalClusterView);
         mAimLogo = mStatusBar.findViewById(R.id.status_bar_logo);
         mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
@@ -224,9 +234,11 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             if ((state1 & DISABLE_NOTIFICATION_ICONS) != 0) {
                 hideNotificationIconArea(animate);
                 hideCarrierName(animate);
+                hideLeftClock(animate);
             } else {
                 showNotificationIconArea(animate);
                 showCarrierName(animate);
+                showLeftClock(animate);
             }
         }
     }
@@ -298,6 +310,16 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateShow(mCenterClockLayout, animate);
     }
 
+    public void hideLeftClock(boolean animate) {
+        if (mLeftClock != null) {
+            animateHide(mLeftClock, animate, false);
+        }
+    }
+
+    public void showLeftClock(boolean animate) {
+        updateClockStyle(animate);
+    }
+
     /**
      * Hides a view.
      */
@@ -360,6 +382,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         }
     }
 
+    private void updateClockStyle(boolean animate) {
+        if (mClockStyle == 0 || mClockStyle == 1) {
+            animateHide(mLeftClock, animate, false);
+        } else {
+            animateShow(mLeftClock, animate);
+        }
+    }
+
     public void updateSettings(boolean animate) {
 		Drawable logo = null;
 
@@ -378,7 +408,12 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 		mCustomLogos = Settings.System.getIntForUser(
                  getContext().getContentResolver(), Settings.System.STATUS_BAR_CUSTOM_LOGOS, 0,
                  UserHandle.USER_CURRENT);
- 
+
+        mClockStyle = Settings.System.getIntForUser(mContentResolver,
+                Settings.System.STATUSBAR_CLOCK_STYLE, 0,
+                UserHandle.USER_CURRENT);
+        updateClockStyle(animate);
+
          switch(mCustomLogos) {
                 	 // Wolf thin
              case 1:
@@ -413,18 +448,17 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                  logo = getContext().getDrawable(R.drawable.status_bar_logo);
                  break;
          }
- 
+
          if (mAimLogo != null) {
              if (logo == null) {
                  // Something wrong. Do not show anything
                  mAimLogo.setImageDrawable(logo);
                  return;
              }
- 
+
              mAimLogo.setImageDrawable(logo);
 			 mAimLogo.setColorFilter(mLogoColor, PorterDuff.Mode.MULTIPLY);
          }
- 
 
         if (mNotificationIconAreaInner != null) {
             if (mShowLogo) {
