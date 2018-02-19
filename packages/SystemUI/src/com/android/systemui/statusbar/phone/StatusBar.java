@@ -6402,6 +6402,13 @@ public class StatusBar extends SystemUI implements DemoMode,
         mTickerEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_SHOW_TICKER, 1,
                 UserHandle.USER_CURRENT);
+         }
+     }
+
+    public void updateQsbhClock() {
+        if (mQuickStatusBarHeader != null) {
+            mQuickStatusBarHeader.updateQsbhClock();
+        }
     }
 
     private void setLockscreenDoubleTapToSleep() {
