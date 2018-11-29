@@ -323,11 +323,11 @@ public class BatteryMeterView extends LinearLayout implements
                 updatePercentView();
                 break;
             case TEXT_CHARGING_SYMBOL:
-                mTextChargingSymbol = 0;
+                mTextChargingSymbol = 1;
                 try {
                     mTextChargingSymbol = Integer.valueOf(newValue);
                 } catch (NumberFormatException ex) {}
-                updateShowPercent();
+                updatePercentView();
                 break;
             default:
                 break;
@@ -424,26 +424,45 @@ public class BatteryMeterView extends LinearLayout implements
                     mChargeIndicator = bolt + " ";
                     break;
                 case 2:
-                    mChargeIndicator = "⚡️ ";
+                    mChargeIndicator = "⚡️";
                     break;
                 case 3:
-                    mChargeIndicator = "~ ";
+                    mChargeIndicator = "~";
+                    break;
+                case 4:
+                    mChargeIndicator = "+";
+                    break;
+                case 5:
+                    mChargeIndicator = "*";
+                    break;
+                case 6:
+                    mChargeIndicator = "₹";
+                    break;
+                case 7:
+                    mChargeIndicator = "$";
+                    break;
+                case 8:
+                    mChargeIndicator = "€";
+                    break;
+                case 9:
+                    mChargeIndicator = "¢";
                     break;
             }
         }
 
         String text = NumberFormat.getPercentInstance().format(mLevel / 100f);
+        final String mChargeIndicatorFinal = mChargeIndicator;
 
         if (mShowBatteryEstimate != 0 && !mCharging) {
             mBatteryController.getEstimatedTimeRemainingString((String estimate) -> {
                 if (estimate != null) {
                     if (mShowPercentMode == MODE_ON || mShowBatteryPercent == 2) {
-                        mBatteryPercentView.setText(mChargeIndicator + text + " · " + estimate);
+                        mBatteryPercentView.setText(mChargeIndicatorFinal + text + " · " + estimate);
                     } else {
-                        mBatteryPercentView.setText(mChargeIndicator + estimate);
+                        mBatteryPercentView.setText(mChargeIndicatorFinal + estimate);
                     }
                 } else if (mShowPercentMode == MODE_ON || mShowBatteryPercent == 2) {
-                    mBatteryPercentView.setText(text);
+                    mBatteryPercentView.setText(mChargeIndicatorFinal + text);
                 } else {
                     mBatteryPercentView.setText("");
                 }
@@ -599,7 +618,6 @@ public class BatteryMeterView extends LinearLayout implements
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             updateShowPercent();
-            updateTextChargingSymbol();
             if (TextUtils.equals(uri.getLastPathSegment(),
                     Settings.Global.BATTERY_ESTIMATES_LAST_UPDATE_TIME)) {
                 // update the text for sure if the estimate in the cache was updated
