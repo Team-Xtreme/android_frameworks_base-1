@@ -28,7 +28,9 @@ import static com.android.systemui.statusbar.phone.StatusBar.SHOW_LOCKSCREEN_MED
 import android.annotation.MainThread;
 import android.annotation.Nullable;
 import android.app.Notification;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -49,10 +51,11 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.provider.Settings;
 
 import com.android.internal.config.sysui.SystemUiDeviceConfigFlags;
 import com.android.internal.statusbar.NotificationVisibility;
-import com.android.internal.util.stag.ImageHelper;
+import com.android.internal.util.aim.ImageHelper;
 import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
 import com.android.systemui.Interpolators;
@@ -239,21 +242,12 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 mContext.getMainExecutor(),
                 mPropertiesChangedListener);
 
-        final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (LOCKSCREEN_MEDIA_METADATA.equals(key)) {
-            mShowMediaMetadata = TunerService.parseIntegerSwitch(newValue, true);
-            dispatchUpdateMediaMetaData(false /* changed */, true /* allowAnimation */);
-        }
-    }
-
         Handler mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
     }
 
     class SettingsObserver extends ContentObserver {
@@ -270,7 +264,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         }
 
         /*
-         *  @hide
+         * @hide
          */
         @Override
         public void onChange(boolean selfChange) {
@@ -283,6 +277,14 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         mAlbumArtFilter = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_ALBUM_ART_FILTER, 5,
                 UserHandle.USER_CURRENT);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        if (LOCKSCREEN_MEDIA_METADATA.equals(key)) {
+            mShowMediaMetadata = TunerService.parseIntegerSwitch(newValue, true);
+            dispatchUpdateMediaMetaData(false /* changed */, true /* allowAnimation */);
+        }
     }
 
     public static boolean isPlayingState(int state) {
