@@ -864,6 +864,7 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
         synchronized (mLock) {
             mHandler.removeMessages(MSG_TOGGLE_CAMERA_FLASH);
             mHandler.sendEmptyMessage(MSG_TOGGLE_CAMERA_FLASH);
+        }
     }
 
     @Override
@@ -1155,13 +1156,14 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
                         mCallbacks.get(i).setBlockedGesturalNavigation((Boolean) msg.obj);
                     }
                     break;
-                case MSG_TOGGLE_CAMERA_FLASH:
-                    for (int i = 0; i < mCallbacks.size(); i++) {
-                        mCallbacks.get(i).toggleCameraFlash();
-                    break;
                 case MSG_SET_AUTOROTATE_STATUS:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).setAutoRotate(msg.arg1 != 0);
+                    }
+                    break;
+                case MSG_TOGGLE_CAMERA_FLASH:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).toggleCameraFlash();
                     }
                     break;
             }
