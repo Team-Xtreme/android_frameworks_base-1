@@ -5030,10 +5030,10 @@ public final class Settings {
         private static final Validator QS_EDIT_TOGGLE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
-         * Whether footer #ion text shows
+         * Whether footer text shows
          * @hide
          */
-        public static final String FO0TER_TEXT_SHOW = "footer_text_show";
+        public static final String FOOTER_TEXT_SHOW = "footer_text_show";
 
         /** @hide */
         private static final Validator FOOTER_TEXT_SHOW_VALIDATOR = BOOLEAN_VALIDATOR;
