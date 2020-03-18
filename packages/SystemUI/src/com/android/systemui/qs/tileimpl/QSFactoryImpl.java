@@ -59,6 +59,7 @@ import com.android.systemui.qs.tiles.VpnTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
+import com.android.systemui.qs.tiles.FreedomhubTile;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -100,6 +101,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<GamingModeTile> mGamingModeTileProvider;
+    private final Provider<FreedomhubTile> mFreedomhubTileProvider;
 
     private QSTileHost mHost;
 
@@ -134,7 +136,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VolumeTile> volumeTileProvider,
             Provider<VpnTile> vpnTileProvider,
-            Provider<GamingModeTile> gamingModeTileProvider) {
+            Provider<GamingModeTile> gamingModeTileProvider,
+            Provider<FreedomhubTile> FreedomhubTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -166,6 +169,7 @@ public class QSFactoryImpl implements QSFactory {
         mVolumeTileProvider = volumeTileProvider;
         mVpnTileProvider = vpnTileProvider;
         mGamingModeTileProvider = gamingModeTileProvider;
+        mFreedomhubTileProvider = FreedomhubTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -244,6 +248,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mVpnTileProvider.get();
             case "gaming":
                 return mGamingModeTileProvider.get();
+            case "freedomhub":
+                return mFreedomhubTileProvider.get();
         }
 
         // Intent tiles.
