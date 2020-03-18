@@ -84,6 +84,8 @@ public class BatteryMeterView extends LinearLayout implements
             "system:" + Settings.System.STATUS_BAR_SHOW_BATTERY_PERCENT;
     public static final String STATUS_BAR_BATTERY_TEXT_CHARGING =
             "system:" + Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING;
+    public static final String TEXT_CHARGING_SYMBOL =
+            "system:" + Settings.System.TEXT_CHARGING_SYMBOL;
 
     @Retention(SOURCE)
     @IntDef({MODE_DEFAULT, MODE_ON, MODE_OFF, MODE_ESTIMATE})
@@ -115,6 +117,7 @@ public class BatteryMeterView extends LinearLayout implements
     public int mShowBatteryPercent;
     public int mShowBatteryEstimate = 0;
     private boolean mBatteryPercentCharging;
+    private int mTextChargingSymbol;
 
     private DualToneHandler mDualToneHandler;
     private int mUser;
@@ -247,7 +250,8 @@ public class BatteryMeterView extends LinearLayout implements
         Dependency.get(TunerService.class)
                 .addTunable(this, STATUS_BAR_BATTERY_STYLE,
                                   STATUS_BAR_SHOW_BATTERY_PERCENT,
-                                  STATUS_BAR_BATTERY_TEXT_CHARGING);
+                                  STATUS_BAR_BATTERY_TEXT_CHARGING,
+                                  TEXT_CHARGING_SYMBOL);
         mIsSubscribedForTunerUpdates = true;
     }
 
@@ -317,6 +321,13 @@ public class BatteryMeterView extends LinearLayout implements
                 mBatteryPercentCharging =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updatePercentView();
+                break;
+            case TEXT_CHARGING_SYMBOL:
+                mTextChargingSymbol = 0;
+                try {
+                    mTextChargingSymbol = Integer.valueOf(newValue);
+                } catch (NumberFormatException ex) {}
+                updateShowPercent();
                 break;
             default:
                 break;
@@ -398,13 +409,28 @@ public class BatteryMeterView extends LinearLayout implements
     }
 
     private void setPercentTextAtCurrentLevel() {
-        // Use the high voltage symbol ⚡ (u26A1 unicode) but prevent the system
-        // to load its emoji colored variant with the uFE0E flag
-        String bolt = "\u26A1\uFE0E";
-        CharSequence mChargeIndicator =
-                mCharging && (mBatteryStyle == BATTERY_STYLE_TEXT
-                || mBatteryStyle == BATTERY_STYLE_HIDDEN)
-                ? (bolt + " ") : "";
+        String mChargeIndicator = "";
+        if (mCharging && (mBatteryStyle == BATTERY_STYLE_TEXT
+                || mBatteryStyle == BATTERY_STYLE_HIDDEN)) {
+            switch (mTextChargingSymbol) {
+                case 0:
+                default:
+                    mChargeIndicator = "";
+                    break;
+                case 1:
+                    // Use the high voltage symbol ⚡ (u26A1 unicode) but prevent the system
+                    // to load its emoji colored variant with the uFE0E flag
+                    String bolt = "\u26A1\uFE0E";
+                    mChargeIndicator = bolt + " ";
+                    break;
+                case 2:
+                    mChargeIndicator = "⚡️ ";
+                    break;
+                case 3:
+                    mChargeIndicator = "~ ";
+                    break;
+            }
+        }
 
         String text = NumberFormat.getPercentInstance().format(mLevel / 100f);
 
@@ -573,6 +599,7 @@ public class BatteryMeterView extends LinearLayout implements
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             updateShowPercent();
+            updateTextChargingSymbol();
             if (TextUtils.equals(uri.getLastPathSegment(),
                     Settings.Global.BATTERY_ESTIMATES_LAST_UPDATE_TIME)) {
                 // update the text for sure if the estimate in the cache was updated
