@@ -76,7 +76,7 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
     @Override
     protected void handleClick() {
         mHost.collapsePanels();
-        startfreedomhub();
+        startFreedomhubActivity();
         refreshState();
     }
 
@@ -100,9 +100,11 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
         return mContext.getString(R.string.quick_freedomhub);
     }
 
-    protected Intent startfreedomhub() {
-        return new Intent().setComponent(new ComponentName(
-            "com.android.settings", "com.android.settings.Settings$FreedomhubActivity"));
+    private void startFreedomhubActivity() {
+        Intent nIntent = new Intent(Intent.ACTION_MAIN);
+        nIntent.setClassName("com.android.settings",
+            "com.android.settings.Settings$FreedomhubActivity");
+        mActivityStarter.startActivity(nIntent, true /* dismissShade */);
     }
 
     @Override
