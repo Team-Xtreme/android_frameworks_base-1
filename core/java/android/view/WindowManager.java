@@ -709,9 +709,7 @@ public interface WindowManager extends ViewManager {
                 @ViewDebug.IntToString(from = TYPE_SCREENSHOT,
                         to = "SCREENSHOT"),
                 @ViewDebug.IntToString(from = TYPE_APPLICATION_OVERLAY,
-                        to = "APPLICATION_OVERLAY"),
-                @ViewDebug.IntToString(from = TYPE_SLIM_RECENTS,
-                        to = "TYPE_SLIM_RECENTS")
+                        to = "APPLICATION_OVERLAY")
         })
         public int type;
 
@@ -1117,13 +1115,6 @@ public interface WindowManager extends ViewManager {
          * @hide
          */
         public static final int TYPE_SYSTEM_LONGSHOT = FIRST_SYSTEM_WINDOW + 39;
-
-        /**
-         * Window type: panel that slides out from the status bar
-         * In multiuser systems shows on all users' windows.
-         * @hide
-         */
-        public static final int TYPE_SLIM_RECENTS = FIRST_SYSTEM_WINDOW+39;
 
         /**
          * End of types of system windows.
