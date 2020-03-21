@@ -37,6 +37,7 @@ import java.util.Random;
 import javax.inject.Inject;
 
 public class FreedomhubTile extends QSTileImpl<BooleanState> {
+
     private boolean mListening;
 
    // Random Strings
@@ -76,13 +77,16 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
     @Override
     protected void handleClick() {
         mHost.collapsePanels();
-        startFreedomhubActivity();
-        refreshState();
+        Random randomInsult = new Random();
+        final int toasts = randomInsult.nextInt(insults.length);
+        SysUIToast.makeText(mContext, insults[toasts],
+                      Toast.LENGTH_LONG).show();
     }
 
     @Override
     public Intent getLongClickIntent() {
-        return null;
+        return new Intent().setComponent(new ComponentName(
+            "com.android.settings", "com.android.settings.Settings$FreedomhubActivity"));
     }
 
     @Override
@@ -98,13 +102,6 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
     @Override
     public CharSequence getTileLabel() {
         return mContext.getString(R.string.quick_freedomhub);
-    }
-
-    private void startFreedomhubActivity() {
-        Intent nIntent = new Intent(Intent.ACTION_MAIN);
-        nIntent.setClassName("com.android.settings",
-            "com.android.settings.Settings$FreedomhubActivity");
-        mActivityStarter.startActivity(nIntent, true /* dismissShade */);
     }
 
     @Override
