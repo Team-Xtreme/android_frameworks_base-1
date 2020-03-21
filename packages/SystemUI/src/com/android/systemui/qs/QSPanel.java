@@ -19,6 +19,10 @@ package com.android.systemui.qs;
 import static com.android.systemui.qs.tileimpl.QSTileImpl.getColorForState;
 import static com.android.systemui.util.InjectionInflationController.VIEW_CONTEXT;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.Nullable;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +32,7 @@ import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -74,6 +79,10 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     public static final String QS_SHOW_BRIGHTNESS_SLIDER =
             "lineagesecure:" + LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER;
     public static final String QS_SHOW_HEADER = "qs_show_header";
+    public static final String ANIM_TILE_STYLE =
+            "system:" + Settings.System.ANIM_TILE_STYLE;
+    public static final String ANIM_TILE_DURATION =
+            "system:" + Settings.System.ANIM_TILE_DURATION;
 
     public static final String QS_SHOW_SECURITY = "qs_show_secure";
 
@@ -109,6 +118,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private View mDivider;
 
     private int mBrightnessSlider = 1;
+    private int animStyle, animDuration;
 
     public QSPanel(Context context) {
         this(context, null);
@@ -217,6 +227,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, QS_SHOW_AUTO_BRIGHTNESS);
         tunerService.addTunable(this, QS_SHOW_BRIGHTNESS_SLIDER);
+        tunerService.addTunable(this, ANIM_TILE_STYLE);
+        tunerService.addTunable(this, ANIM_TILE_DURATION);
         tunerService.addTunable(this, QS_SHOW_SECURITY);
 
         if (mHost != null) {
@@ -257,6 +269,16 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             mBrightnessSlider = TunerService.parseInteger(newValue, 1);
             mBrightnessView.setVisibility(mBrightnessSlider != 0 ? VISIBLE : GONE);
             restartQSPanel();
+        } else if (ANIM_TILE_STYLE.equals(key)) {
+            animStyle = TunerService.parseInteger(newValue, 0);
+            if (mHost != null) {
+                setTiles(mHost.getTiles());
+            }
+        } else if (ANIM_TILE_DURATION.equals(key)) {
+            animDuration = TunerService.parseInteger(newValue, 0);
+            if (mHost != null) {
+                setTiles(mHost.getTiles());
+            }
         }
         if (QS_SHOW_SECURITY.equals(key)) {
             mFooter.setForceHide(newValue != null && Integer.parseInt(newValue) == 0);
@@ -544,6 +566,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         if (mTileLayout != null) {
             mTileLayout.addTile(r);
+            configureTile(r.tile, r.tileView);
         }
 
         return r;
@@ -758,5 +781,31 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         default void setExpansion(float expansion) {}
 
         int getNumVisibleTiles();
+    }
+
+    private void setAnimationTile(QSTileView v) {
+        ObjectAnimator animTile = null;
+        if (animStyle == 0) {
+            //No animation
+        }
+        if (animStyle == 1) {
+            animTile = ObjectAnimator.ofFloat(v, "rotationY", 0f, 360f);
+        }
+        if (animStyle == 2) {
+            animTile = ObjectAnimator.ofFloat(v, "rotation", 0f, 360f);
+        }
+        if (animTile != null) {
+            animTile.setDuration(animDuration);
+            animTile.start();
+        }
+    }
+
+    private void configureTile(QSTile t, QSTileView v) {
+        if (mTileLayout != null) {
+            v.setOnClickListener(view -> {
+                    t.click();
+                    setAnimationTile(v);
+            });
+        }
     }
 }
