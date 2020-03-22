@@ -85,18 +85,14 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
 
     @Override
     public Intent getLongClickIntent() {
-        return new Intent().setComponent(new ComponentName(
-            "com.android.settings", "com.android.settings.Settings$FreedomhubActivity"));
+        return null;
     }
 
     @Override
     public void handleLongClick() {
-        // Collapse the panels, so the user can see the toast.
         mHost.collapsePanels();
-        Random randomInsult = new Random();
-        final int toasts = randomInsult.nextInt(insults.length);
-        SysUIToast.makeText(mContext, insults[toasts],
-                      Toast.LENGTH_LONG).show();
+        return new Intent().setComponent(new ComponentName(
+            "com.android.settings", "com.android.settings.Settings$FreedomhubActivity"));
     }
 
     @Override
