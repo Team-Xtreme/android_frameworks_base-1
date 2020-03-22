@@ -91,6 +91,11 @@ public class FreedomhubTile extends QSTileImpl<BooleanState> {
     @Override
     public void handleLongClick() {
         mHost.collapsePanels();
+        startfreedomhub();
+        refreshState();
+    }
+
+    protected Intent startfreedomhub() {
         return new Intent().setComponent(new ComponentName(
             "com.android.settings", "com.android.settings.Settings$FreedomhubActivity"));
     }

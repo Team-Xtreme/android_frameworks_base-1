@@ -69,6 +69,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.om.IOverlayManager;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -307,8 +308,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.LOCKSCREEN_CHARGING_ANIMATION;
     private static final String PULSE_ON_NEW_TRACKS =
             Settings.Secure.PULSE_ON_NEW_TRACKS;
-
-    private static final String ACCENT_COLOR_PROP = "persist.sys.ion.accent_color";
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -648,6 +647,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected KeyguardMonitor mKeyguardMonitor;
     protected BatteryController mBatteryController;
     protected boolean mPanelExpanded;
+    private IOverlayManager mOverlayManager;
     private UiModeManager mUiModeManager;
     protected boolean mIsKeyguard;
     private LogMaker mStatusBarStateLog;
@@ -734,6 +734,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             mBubbleController.setExpandListener(mBubbleExpandListener);
         }
 
+        mOverlayManager = IOverlayManager.Stub.asInterface(
+                ServiceManager.getService(Context.OVERLAY_SERVICE));
         mUiModeManager = mContext.getSystemService(UiModeManager.class);
         mKeyguardViewMediator = getComponent(KeyguardViewMediator.class);
         mNavigationBarSystemUiVisibility = mNavigationBarController.createSystemUiVisibility();
@@ -4143,40 +4145,18 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.Secure.AMBIENT_VISUALIZER_ENABLED),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ACCENT_COLOR),
-                    false, this, UserHandle.USER_ALL);
         }
-            
+
          @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.AMBIENT_VISUALIZER_ENABLED))) {
                 setAmbientVis();
-            } else if (uri.equals(Settings.System.getUriFor(Settings.System.ACCENT_COLOR))) {
-                applyAccentColor();
             }
         }
 
         public void update() {
             setAmbientVis();
-            applyAccentColor();
-        }
-    }
-
-    private void applyAccentColor() {
-        int intColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.ACCENT_COLOR, 0xFF1A73E8,
-                UserHandle.USER_CURRENT);
-        String colorHex = String.format("%08x", (0xFFFFFFFF & intColor));
-        String accentVal = SystemProperties.get(ACCENT_COLOR_PROP);
-        if (!accentVal.equals(colorHex)) {
-            SystemProperties.set(ACCENT_COLOR_PROP, colorHex);
-            try {
-                mOverlayManager.reloadAndroidAssets(UserHandle.USER_CURRENT);
-                mOverlayManager.reloadAssets("com.android.settings", UserHandle.USER_CURRENT);
-                mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
-            } catch (Exception e) { }
         }
     }
 
