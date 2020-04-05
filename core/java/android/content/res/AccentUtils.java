@@ -21,14 +21,23 @@ public class AccentUtils {
     private static final String TAG = "AccentUtils";
 
     private static final String ACCENT_COLOR_PROP = "persist.sys.aim.accent_color";
+    private static final String FOOTER_TEXT_COLOR_PROP = "persist.sys.aim.footer_text_color";
 
     static boolean isResourceAccent(String resName) {
         return resName.contains("accent_device_default_light")
                 || resName.contains("accent_device_default_dark");
     }
 
+    static boolean isResourceFooterTextColor(String resName) {
+        return resName.contains("qs_footer_text_color");
+    }
+
     public static int getNewAccentColor(int defaultColor) {
         return getAccentColor(defaultColor, ACCENT_COLOR_PROP);
+    }
+
+    public static int getNewFooterTextColor(int defaultColor) {
+        return getAccentColor(defaultColor, FOOTER_TEXT_COLOR_PROP);
     }
 
     private static int getAccentColor(int defaultColor, String property) {

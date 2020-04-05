@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -190,6 +191,7 @@ public class QSFooterImpl extends FrameLayout implements Tunable, QSFooter,
             if (TextUtils.isEmpty(text) || text == null) {
                 v.setText("#LetsAIMify");
                 v.setVisibility(View.VISIBLE);
+                v.setTextColor(R.color.qs_footer_text_color);
             } else {
                 v.setText(text);
                 v.setVisibility(View.VISIBLE);

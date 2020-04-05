@@ -81,6 +81,7 @@ final class UiModeManagerService extends SystemService {
 
     private IOverlayManager mOverlayManager;
     private static final String ACCENT_COLOR_PROP = "persist.sys.aim.accent_color";
+    private static final String FOOTER_TEXT_COLOR_PROP = "persist.sys.aim.footer_text_color";
 
     final Object mLock = new Object();
     private int mDockState = Intent.EXTRA_DOCK_STATE_UNDOCKED;
@@ -280,6 +281,8 @@ final class UiModeManagerService extends SystemService {
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(System.getUriFor(System.ACCENT_COLOR))) {
                 applyAccentColor();
+            } else if (uri.equals(System.getUriFor(System.FOOTER_TEXT_COLOR))) {
+                setFooterTextColor();
             }
         }
     };
@@ -350,6 +353,7 @@ final class UiModeManagerService extends SystemService {
         mOverlayManager = IOverlayManager.Stub
                 .asInterface(ServiceManager.getService(Context.OVERLAY_SERVICE));
         applyAccentColor();
+        setFooterTextColor();
 
         // Update the initial, static configurations.
         SystemServerInitThreadPool.get().submit(() -> {
@@ -369,6 +373,8 @@ final class UiModeManagerService extends SystemService {
         context.getContentResolver().registerContentObserver(Secure.getUriFor(Secure.UI_NIGHT_MODE),
                 false, mDarkThemeObserver, 0);
         context.getContentResolver().registerContentObserver(System.getUriFor(System.ACCENT_COLOR),
+                false, mAccentObserver, UserHandle.USER_ALL);
+        context.getContentResolver().registerContentObserver(System.getUriFor(System.FOOTER_TEXT_COLOR),
                 false, mAccentObserver, UserHandle.USER_ALL);
     }
 
@@ -457,6 +463,22 @@ final class UiModeManagerService extends SystemService {
             try {
                 mOverlayManager.reloadAndroidAssets(UserHandle.USER_CURRENT);
                 mOverlayManager.reloadAssets("com.android.settings", UserHandle.USER_CURRENT);
+                mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
+            } catch (Exception e) { }
+        }
+    }
+
+    private void setFooterTextColor() {
+        final Context context = getContext();
+        int footertextColor = System.getIntForUser(context.getContentResolver(),
+                System.FOOTER_TEXT_COLOR, 0xFF000000, UserHandle.USER_CURRENT);
+        String footertextHex = String.format("%08x", (0xFFFFFFFF & footertextColor));
+        String footertextVal = SystemProperties.get(FOOTER_TEXT_COLOR_PROP);
+        if (!footertextVal.equals(footertextHex)) {
+            SystemProperties.set(FOOTER_TEXT_COLOR_PROP, footertextHex);
+            try {
+                mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
+            } catch (Exception e) { }
                 mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
             } catch (Exception e) { }
         }

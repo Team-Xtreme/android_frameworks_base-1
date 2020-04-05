@@ -5286,6 +5286,15 @@ public final class Settings {
         /** @hide */
         private static final Validator ACCENT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
+        /**
+         * Footer Text Color
+         * @hide
+         */
+        public static final String FOOTER_TEXT_COLOR = "footer_text_color";
+
+        /** @hide */
+        private static final Validator FOOTER_TEXT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
        /** @hide */
         public static final String OMNI_NAVIGATION_BAR_RECENTS = "navigation_bar_recents";
 
@@ -5376,6 +5385,7 @@ public final class Settings {
             QS_EDIT_TOGGLE,
             SCREEN_OFF_ANIMATION,
             ACCENT_COLOR,
+            FOOTER_TEXT_COLOR,
             USE_SLIM_RECENTS,
             RECENTS_MAX_APPS,
             RECENT_PANEL_GRAVITY,
@@ -5523,6 +5533,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_EDIT_TOGGLE);
             PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);
             PRIVATE_SETTINGS.add(ACCENT_COLOR);
+            PRIVATE_SETTINGS.add(FOOTER_TEXT_COLOR);
             PRIVATE_SETTINGS.add(USE_SLIM_RECENTS);
             PRIVATE_SETTINGS.add(RECENTS_MAX_APPS);
             PRIVATE_SETTINGS.add(RECENT_PANEL_GRAVITY);
@@ -5646,6 +5657,7 @@ public final class Settings {
             VALIDATORS.put(QS_EDIT_TOGGLE, QS_EDIT_TOGGLE_VALIDATOR);
             VALIDATORS.put(SCREEN_OFF_ANIMATION, SCREEN_OFF_ANIMATION_VALIDATOR);
             VALIDATORS.put(ACCENT_COLOR, ACCENT_COLOR_VALIDATOR);
+            VALIDATORS.put(FOOTER_TEXT_COLOR, FOOTER_TEXT_COLOR_VALIDATOR);
             VALIDATORS.put(USE_SLIM_RECENTS, USE_SLIM_RECENTS_VALIDATOR);
             VALIDATORS.put(RECENTS_MAX_APPS, RECENTS_MAX_APPS_VALIDATOR);
             VALIDATORS.put(RECENT_PANEL_GRAVITY, RECENT_PANEL_GRAVITY_VALIDATOR);

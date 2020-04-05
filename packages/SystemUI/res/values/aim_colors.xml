@@ -26,4 +26,7 @@
     <color name="edge_light_red">#ffea4234</color>
     <color name="edge_light_yellow">#fffbbc06</color>
 
+    <!-- Footer Text Color -->
+    <color name="qs_footer_text_color">#ffffff</color>
+
 </resources>

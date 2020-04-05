@@ -521,6 +521,8 @@ public class TypedArray {
                 int newColor = defValue;
                 if (AccentUtils.isResourceAccent(resName))
                     newColor = AccentUtils.getNewAccentColor(defValue);
+                if (AccentUtils.isResourceFooterTextColor(resName))
+                    newColor = AccentUtils.getNewFooterTextColor(defValue);
                 if (newColor != defValue)
                     return newColor;
             }
